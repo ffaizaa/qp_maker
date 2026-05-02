@@ -99,10 +99,7 @@ export default function DocumentPreview({ file, text, onReplace }: Props) {
   }
 
   return (
-    <div className="container py-5">
-      <h1 className="mb-4 text-center">QP Maker</h1>
-
-      <div className="card">
+    <div className="card">
         <div className="card-header d-flex align-items-center justify-content-between gap-2">
           <div className="d-flex align-items-center gap-2 text-truncate">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-text flex-shrink-0" viewBox="0 0 16 16">
@@ -125,6 +122,5 @@ export default function DocumentPreview({ file, text, onReplace }: Props) {
           {renderBody()}
         </div>
       </div>
-    </div>
   );
 }

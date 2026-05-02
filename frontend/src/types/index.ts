@@ -39,3 +39,9 @@ export interface QuestionPaper {
 }
 
 export type QuestionCounts = Partial<Record<QuestionType, number>>;
+
+export interface PaperConfig {
+  title: string;
+  difficulty: Difficulty;
+  counts: QuestionCounts;
+}
