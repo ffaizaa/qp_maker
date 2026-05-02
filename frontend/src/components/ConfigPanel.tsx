@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { Difficulty, PaperConfig, QuestionCounts, QuestionType } from '../types';
 
-const MAX_QUESTIONS = 20;
 const QUESTION_TYPES: QuestionType[] = ['MCQ', 'Short Question', 'Broad Question', 'True/False'];
 const DIFFICULTIES: Difficulty[] = ['Easy', 'Medium', 'Hard'];
 
@@ -16,13 +15,10 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
   const [counts, setCounts] = useState<QuestionCounts>({ MCQ: 5 });
 
   const total = Object.values(counts).reduce((sum, n) => sum + (n ?? 0), 0);
-  const remaining = MAX_QUESTIONS - total;
 
   function setCount(type: QuestionType, raw: string) {
     const val = Math.max(0, parseInt(raw) || 0);
-    const otherTotal = total - (counts[type] ?? 0);
-    const clamped = Math.min(val, MAX_QUESTIONS - otherTotal);
-    setCounts((prev) => ({ ...prev, [type]: clamped || undefined }));
+    setCounts((prev) => ({ ...prev, [type]: val || undefined }));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -74,9 +70,7 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
         <div>
           <div className="d-flex justify-content-between align-items-baseline mb-2">
             <label className="form-label fw-medium mb-0">Questions</label>
-            <span className={`small ${remaining === 0 ? 'text-danger fw-semibold' : 'text-muted'}`}>
-              {total} / {MAX_QUESTIONS}
-            </span>
+            <span className="text-muted small">{total} total</span>
           </div>
           <div className="d-flex flex-column gap-2">
             {QUESTION_TYPES.map((type) => (
@@ -95,7 +89,6 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
                     className="form-control form-control-sm text-center"
                     style={{ width: '3.5rem' }}
                     min={0}
-                    max={MAX_QUESTIONS}
                     value={counts[type] ?? 0}
                     onChange={(e) => setCount(type, e.target.value)}
                   />
@@ -103,7 +96,6 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
                     type="button"
                     className="btn btn-sm btn-outline-secondary px-2 py-0"
                     style={{ lineHeight: '1.6' }}
-                    disabled={remaining === 0}
                     onClick={() => setCount(type, String((counts[type] ?? 0) + 1))}
                   >+</button>
                 </div>

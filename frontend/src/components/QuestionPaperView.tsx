@@ -10,7 +10,7 @@ const MCQ_LABELS = ['A', 'B', 'C', 'D'];
 
 function QuestionItem({ question, index, showAnswers }: { question: Question; index: number; showAnswers: boolean }) {
   return (
-    <div className="mb-4">
+    <div className="mb-4 text-start">
       <p className="mb-1 fw-medium">
         <span className="me-2 text-muted">{index}.</span>
         {question.question}
@@ -81,7 +81,7 @@ export default function QuestionPaperView({ paper, onReset }: Props) {
 
       {Object.entries(grouped).map(([type, questions]) => (
         <section key={type} className="mb-5">
-          <h6 className="text-uppercase text-muted border-bottom pb-1 mb-3 small fw-semibold letter-spacing-1">
+          <h6 className="text-uppercase border-bottom pb-1 mb-3 small fw-bold text-start">
             {type}
           </h6>
           {questions.map((q) => (
