@@ -10,6 +10,7 @@ interface Props {
 export default function DocumentUpload({ onUpload }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [hovering, setHovering] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,12 +41,41 @@ export default function DocumentUpload({ onUpload }: Props) {
 
   return (
     <div className="container py-5">
-      <h1 className="mb-4 text-center">QP Maker</h1>
+      <div className="text-center mb-4 py-3">
+        <h1
+          className="mb-1 fw-bold"
+          style={{
+            background: 'linear-gradient(90deg, #6366f1, #a855f7, #ec4899)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontSize: '2.4rem',
+            letterSpacing: '-0.5px',
+          }}
+        >
+          Question Generator
+        </h1>
+        <p className="text-muted small mb-0">Upload a document and generate a question paper instantly</p>
+      </div>
 
       <div
-        className={`border rounded p-5 text-center ${dragging ? 'border-primary bg-primary bg-opacity-10' : 'border-secondary'}`}
-        style={{ cursor: 'pointer', borderStyle: 'dashed' }}
+        className="border rounded p-5 text-center"
+        style={{
+          cursor: 'pointer',
+          borderStyle: 'dashed',
+          borderWidth: '2px',
+          borderColor: dragging ? '#6f42c1' : hovering ? '#0d6efd' : '#adb5bd',
+          background: dragging
+            ? 'linear-gradient(135deg, #e0cffc 0%, #cfe2ff 100%)'
+            : hovering
+            ? 'linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%)'
+            : 'linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%)',
+          transition: 'background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
+          boxShadow: hovering || dragging ? '0 4px 20px rgba(99,102,241,0.15)' : 'none',
+        }}
         onClick={() => inputRef.current?.click()}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}

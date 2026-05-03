@@ -30,10 +30,21 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
   const canSubmit = total > 0 && !loading;
 
   return (
-    <form onSubmit={handleSubmit} className="card h-100">
-      <div className="card-header fw-semibold">Configure Paper</div>
+    <form onSubmit={handleSubmit} className="h-100" style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(99,102,241,0.12)' }}>
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+          padding: '14px 20px',
+          color: '#fff',
+          fontWeight: 600,
+          fontSize: '1rem',
+          letterSpacing: '0.2px',
+        }}
+      >
+        Configure Paper
+      </div>
 
-      <div className="card-body d-flex flex-column gap-4">
+      <div className="card-body d-flex flex-column gap-4" style={{ background: 'linear-gradient(160deg, #fafbff 0%, #f5f0ff 100%)' }}>
 
         {/* Paper title */}
         <div>
@@ -108,11 +119,22 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
         </div>
       </div>
 
-      <div className="card-footer">
+      <div className="card-footer" style={{ background: 'linear-gradient(160deg, #f0ecff 0%, #ede9fe 100%)', borderTop: '1px solid #e0d9f7' }}>
         <button
           type="submit"
-          className="btn btn-primary w-100"
+          className="btn w-100 fw-semibold"
           disabled={!canSubmit}
+          style={{
+            background: canSubmit ? 'linear-gradient(90deg, #6366f1, #a855f7)' : undefined,
+            color: canSubmit ? '#fff' : undefined,
+            border: 'none',
+            borderRadius: '10px',
+            padding: '10px',
+            transition: 'opacity 0.2s ease, box-shadow 0.2s ease',
+            boxShadow: canSubmit ? '0 4px 14px rgba(99,102,241,0.35)' : undefined,
+          }}
+          onMouseEnter={(e) => { if (canSubmit) (e.currentTarget as HTMLButtonElement).style.opacity = '0.88'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
         >
           {loading ? (
             <><span className="spinner-border spinner-border-sm me-2" role="status" />Generating…</>

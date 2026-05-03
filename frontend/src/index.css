@@ -64,6 +64,8 @@
 
 body {
   margin: 0;
+  background: linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #fdf4ff 100%);
+  min-height: 100vh;
 }
 
 h1,

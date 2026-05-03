@@ -57,7 +57,22 @@ function App() {
 
   return (
     <div className="container-fluid py-4 px-4">
-      <h1 className="mb-4 text-center">QP Maker</h1>
+      <div className="text-center mb-4 py-3">
+        <h1
+          className="mb-1 fw-bold"
+          style={{
+            background: 'linear-gradient(90deg, #6366f1, #a855f7, #ec4899)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontSize: '2.4rem',
+            letterSpacing: '-0.5px',
+          }}
+        >
+          Question Generator
+        </h1>
+        <p className="text-muted small mb-0">Upload a document and generate a question paper instantly</p>
+      </div>
 
       {stage === 'done' && paper ? (
         <div className="row justify-content-center">
