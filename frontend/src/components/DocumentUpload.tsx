@@ -97,6 +97,7 @@ export default function DocumentUpload({ onUpload }: Props) {
           <>
             <p className="fs-5 mb-1">Drop your document here, or click to browse</p>
             <p className="text-muted small mb-0">PDF, DOCX, TXT, JPG, PNG, WEBP — up to 10 MB</p>
+            <p className="text-muted small mb-0 mt-1">Supports typed, scanned, and handwritten documents</p>
           </>
         )}
       </div>
