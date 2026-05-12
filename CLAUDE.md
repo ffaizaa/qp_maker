@@ -1,4 +1,4 @@
-# CLAUDE.md — QP Maker
+# CLAUDE.md — Question Generator
 
 ## Purpose
 Single-session question paper generator. User uploads a document, configures difficulty/question types, generates a paper via Gemini AI, edits inline, and downloads as PDF.
@@ -12,7 +12,7 @@ Single-session question paper generator. User uploads a document, configures dif
 | Frontend  | React + TypeScript + Vite         |
 | Styling   | Bootstrap 5 + react-bootstrap     |
 | Backend   | Node.js + Express                 |
-| AI        | Google Gemini (`gemini-1.5-flash`)|
+| AI        | Google Gemini (`gemini-2.5-flash`)|
 | PDF export| html2canvas + jsPDF               |
 
 ---
@@ -20,7 +20,7 @@ Single-session question paper generator. User uploads a document, configures dif
 ## Project Structure
 
 ```
-qp-maker/
+question-generator/
 ├── frontend/src/
 │   ├── components/     # One file per UI responsibility
 │   ├── services/api.ts # All backend calls (no fetch scattered in components)
@@ -51,29 +51,29 @@ npm run lint       # ESLint
 ```bash
 cd backend
 npm install
-node server.js     # listens on http://localhost:5000
+node server.js     # listens on http://localhost:5001
 ```
 
 ### Environment
 Copy `backend/.env.example` → `backend/.env` and fill in:
 ```
 GEMINI_API_KEY=your_key_here
-PORT=5000
+PORT=5001
 ```
 
 ---
 
 ## Key Constraints
 - **One document at a time** — no multi-file sessions
-- **Max 20 questions total** — enforced on both frontend and backend
+- **No question limit** — user sets any count per question type
 - **Strict document grounding** — Gemini prompt instructs it to use only uploaded content
 - **MCQ always has 4 options** — labeled A, B, C, D
-- **Answer key is opt-in** — only shown/included when user requests it
+- **Answer key is opt-in** — only shown/included when user requests it; also exportable as a separate PDF
 
 ---
 
 ## Architecture Decisions
-- Vite proxy (`/api → localhost:5000`) avoids CORS issues in dev; see `frontend/vite.config.ts`
+- Vite proxy (`/api → localhost:5001`) avoids CORS issues in dev; see `frontend/vite.config.ts`
 - Text extraction happens on the backend so the frontend never touches raw binaries
 - Gemini returns structured JSON; backend validates and retries once on malformed output
 - PDF export captures the `QuestionEditor` DOM node — no server-side PDF rendering needed

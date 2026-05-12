@@ -15,6 +15,7 @@ function buildPrompt(text, config) {
       if (type === 'True/False') return `- ${n} True/False question(s) with an answer field of either "True" or "False"`;
       if (type === 'Short Question') return `- ${n} Short Question(s) with a concise answer field (1–3 sentences)`;
       if (type === 'Broad Question') return `- ${n} Broad Question(s) with a detailed answer field (a full paragraph)`;
+      if (type === 'Math Problem') return `- ${n} Math Problem(s): each must be a solvable mathematical problem (equation, calculation, proof step, or word problem) with a "steps" field showing step-by-step working and an "answer" field with the final result`;
       return '';
     })
     .join('\n');
@@ -55,6 +56,13 @@ Return ONLY a valid JSON object — no markdown, no explanation — in this exac
       "type": "Broad Question",
       "question": "...",
       "answer": "..."
+    },
+    {
+      "id": 5,
+      "type": "Math Problem",
+      "question": "Solve for x: 2x + 6 = 14",
+      "steps": "Step 1: 2x = 14 - 6 = 8\nStep 2: x = 8 / 2 = 4",
+      "answer": "x = 4"
     }
   ]
 }
@@ -63,6 +71,7 @@ Rules:
 - Every question must have "id", "type", "question", and "answer" fields.
 - MCQ must also have "options" (array of exactly 4 strings). The "answer" must be the full text of the correct option, matching one of the options exactly.
 - True/False "answer" must be exactly "True" or "False".
+- Math Problem must also have a "steps" field with clear step-by-step working, and "answer" with the final result.
 - Assign sequential integer ids starting at 1.
 - Do not include any text outside the JSON object.
 
@@ -78,13 +87,17 @@ function validatePaper(data, counts) {
   if (data.questions.length !== total) return false;
 
   for (const q of data.questions) {
-    if (!q.id || !q.type || !q.question || !q.answer) return false;
+    if (!q.id || !q.type || !q.question) return false;
     if (q.type === 'MCQ') {
+      if (!q.answer) return false;
       if (!Array.isArray(q.options) || q.options.length !== 4) return false;
       if (!q.options.includes(q.answer)) return false;
-    }
-    if (q.type === 'True/False') {
+    } else if (q.type === 'True/False') {
       if (q.answer !== 'True' && q.answer !== 'False') return false;
+    } else if (q.type === 'Math Problem') {
+      if (!q.answer || !q.steps) return false;
+    } else {
+      if (!q.answer) return false;
     }
   }
 

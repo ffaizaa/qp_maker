@@ -1,6 +1,6 @@
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
-export type QuestionType = 'MCQ' | 'Short Question' | 'Broad Question' | 'True/False';
+export type QuestionType = 'MCQ' | 'Short Question' | 'Broad Question' | 'True/False' | 'Math Problem';
 
 export interface MCQQuestion {
   id: number;
@@ -31,7 +31,15 @@ export interface TrueFalseQuestion {
   answer?: 'True' | 'False';
 }
 
-export type Question = MCQQuestion | ShortQuestion | BroadQuestion | TrueFalseQuestion;
+export interface MathQuestion {
+  id: number;
+  type: 'Math Problem';
+  question: string;
+  steps?: string;
+  answer?: string;
+}
+
+export type Question = MCQQuestion | ShortQuestion | BroadQuestion | TrueFalseQuestion | MathQuestion;
 
 export interface QuestionPaper {
   title: string;
