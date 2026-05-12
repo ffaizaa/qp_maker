@@ -15,7 +15,7 @@ function buildPrompt(text, config) {
       if (type === 'True/False') return `- ${n} True/False question(s) with an answer field of either "True" or "False"`;
       if (type === 'Short Question') return `- ${n} Short Question(s) with a concise answer field (1–3 sentences)`;
       if (type === 'Broad Question') return `- ${n} Broad Question(s) with a detailed answer field (a full paragraph)`;
-      if (type === 'Math Problem') return `- ${n} Math Problem(s): each must be a solvable mathematical problem (equation, calculation, proof step, or word problem) with a "steps" field showing step-by-step working and an "answer" field with the final result`;
+      if (type === 'Math Problem') return `- ${n} Math Problem(s): write each as a self-contained, solvable mathematical problem (equation, calculation, proof step, or word problem) in the same style and topic as the problems in the document. Do NOT mention the document, reference it, or use phrases like "based on the document" or "according to the text". Include a "steps" field showing step-by-step working and an "answer" field with the final result`;
       return '';
     })
     .join('\n');
@@ -73,6 +73,7 @@ Rules:
 - True/False "answer" must be exactly "True" or "False".
 - Math Problem must also have a "steps" field with clear step-by-step working, and "answer" with the final result.
 - Assign sequential integer ids starting at 1.
+- Never reference the document in any question text. Do not use phrases like "based on the document", "according to the passage", "as stated in the text", or similar. Every question must read as a standalone question.
 - Do not include any text outside the JSON object.
 
 DOCUMENT:
