@@ -8,7 +8,9 @@ const generateRoute = require('./routes/generate');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL, 'http://localhost:5173'] : '*',
+}));
 app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/upload', uploadRoute);
