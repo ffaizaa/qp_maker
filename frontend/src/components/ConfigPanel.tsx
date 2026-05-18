@@ -4,10 +4,10 @@ import type { Difficulty, PaperConfig, QuestionCounts, QuestionType } from '../t
 const QUESTION_TYPES: QuestionType[] = ['MCQ', 'Short Question', 'Broad Question', 'True/False', 'Math Problem'];
 const DIFFICULTIES: Difficulty[] = ['Easy', 'Medium', 'Hard'];
 
-const DIFFICULTY_STYLES: Record<Difficulty, { active: string; glow: string; label: string }> = {
-  Easy:   { active: 'linear-gradient(135deg, #22c55e, #16a34a)', glow: 'rgba(34,197,94,0.3)',  label: '😊' },
-  Medium: { active: 'linear-gradient(135deg, #f59e0b, #d97706)', glow: 'rgba(245,158,11,0.3)', label: '🎯' },
-  Hard:   { active: 'linear-gradient(135deg, #ef4444, #dc2626)', glow: 'rgba(239,68,68,0.3)',  label: '🔥' },
+const DIFFICULTY_STYLES: Record<Difficulty, { active: string; glow: string }> = {
+  Easy:   { active: 'linear-gradient(135deg, #22c55e, #16a34a)', glow: 'rgba(34,197,94,0.3)'  },
+  Medium: { active: 'linear-gradient(135deg, #f59e0b, #d97706)', glow: 'rgba(245,158,11,0.3)' },
+  Hard:   { active: 'linear-gradient(135deg, #ef4444, #dc2626)', glow: 'rgba(239,68,68,0.3)'  },
 };
 
 interface Props {
@@ -108,7 +108,7 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
             <label className="form-label fw-semibold mb-2" style={{ fontSize: '0.85rem', color: '#374151' }}>Difficulty</label>
             <div style={{ display: 'flex', gap: '8px' }}>
               {DIFFICULTIES.map((d) => {
-                const { active, glow, label } = DIFFICULTY_STYLES[d];
+                const { active, glow } = DIFFICULTY_STYLES[d];
                 const isSelected = difficulty === d;
                 return (
                   <button
@@ -127,13 +127,8 @@ export default function ConfigPanel({ onGenerate, loading }: Props) {
                       cursor: 'pointer',
                       boxShadow: isSelected ? `0 4px 14px ${glow}` : 'none',
                       transition: 'all 0.2s ease',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '2px',
                     }}
                   >
-                    <span style={{ fontSize: '1rem' }}>{label}</span>
                     {d}
                   </button>
                 );
