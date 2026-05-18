@@ -9,40 +9,59 @@ router.post('/', async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: 'Missing text.' });
 
-  const prompt = `You are a strict document classifier for a question paper generator tool.
+  const prompt = `You are a strict document classifier for a school question paper generator. Read the document carefully and decide if it qualifies as a valid academic document.
 
-Decide if the text below comes from a proper academic study document that a student or teacher would use.
+VALID documents must satisfy ALL of the following:
+- It is a textbook chapter, past exam paper, academic study notes, or academic article
+- It contains actual subject-matter content such as: scientific theories and experiments, historical events with dates and facts, geographical descriptions of places and landforms, mathematical problems and formulas, or English literature passages and analysis
+- It is clearly written as curriculum material that a student would study to learn a subject
+- It is in one of exactly these five subjects: History, Geography, Science (Physics/Chemistry/Biology), Mathematics, or English Literature
 
-ALLOWED (academic: true):
-- Textbooks, study notes, lecture notes, academic papers, past exam papers, worksheets
-- Educational articles or chapters on any school/university subject (Science, Mathematics, English, History, Geography, Biology, Chemistry, Physics, Literature, Economics, Computer Science, etc.)
-- The content must have enough explanatory, descriptive, or conceptual material to generate meaningful exam questions from
+INVALID documents — reject ALL of the following without exception:
+- Personal plans, career roadmaps, coding plans, 12-week plans, or learning schedules
+- Any document that is ABOUT learning or planning rather than actual subject content
+- Programming tutorials, coding guides, DSA study plans, LeetCode problems, software development content
+- Computer science or IT content of any kind
+- Study timetables, revision schedules, or topic checklists
+- Self-improvement, productivity, or motivational content
+- Business, legal, medical, or financial documents
+- Invoices, receipts, contracts, reports, CVs, cover letters
+- Any subject outside the five listed above (no Computer Science, Economics, Psychology, Law, etc.)
+- Documents with fewer than 80 words of real subject content
 
-NOT ALLOWED (academic: false):
-- Invoices, receipts, legal contracts, medical reports, business documents, personal letters, financial statements
-- Isolated code snippets or source code files with no educational explanation around them
-- Random images or screenshots with minimal text (fewer than 50 meaningful words)
-- Social media posts, chat logs, or random web page content
-- Any document that does not contain enough content to generate at least 3 meaningful exam questions
+KEY TEST before answering: Ask yourself — "Could a school teacher write an exam question directly from this content about History, Geography, Science, Mathematics, or English Literature?" If the answer is NO, it is NOT_ACADEMIC.
 
-Reply with ONLY a valid JSON object — no markdown, no explanation:
-{"academic": true, "subject": "Biology"}
+Respond with exactly one line in this format:
+ACADEMIC: <subject name>
 or
-{"academic": false, "reason": "This appears to be an isolated code snippet with no educational explanation."}
+NOT_ACADEMIC: <one-line reason why it was rejected>
 
-DOCUMENT (first 3000 characters):
-${text.slice(0, 3000)}`;
+Do not write anything else. Do not use JSON. Do not add explanation.
+
+DOCUMENT:
+${text.slice(0, 4000)}`;
 
   try {
-    const result = await model.generateContent(prompt);
-    const raw = result.response.text().trim()
-      .replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
-    const parsed = JSON.parse(raw);
-    res.json(parsed);
+    const raw = (await model.generateContent(prompt)).response.text().trim();
+
+    if (raw.startsWith('ACADEMIC')) {
+      // Extract subject from "ACADEMIC: History"
+      const subject = raw.includes(':') ? raw.split(':')[1].trim() : 'Unknown';
+      return res.json({ academic: true, subject });
+    }
+
+    if (raw.startsWith('NOT_ACADEMIC')) {
+      const reason = raw.includes(':') ? raw.split(':').slice(1).join(':').trim() : 'Not a valid academic document.';
+      return res.json({ academic: false, reason });
+    }
+
+    // Response did not start with either expected token — treat as rejection
+    console.error('Unexpected classifier response:', raw.slice(0, 120));
+    return res.json({ academic: false, reason: 'Document validation could not be completed. Please try again.' });
+
   } catch (err) {
     console.error('Classification error:', err.message);
-    // On failure, allow through (fail open) so upload errors don't block users
-    res.json({ academic: true, subject: 'Unknown' });
+    return res.json({ academic: false, reason: 'Document validation could not be completed. Please try again.' });
   }
 });
 

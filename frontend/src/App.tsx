@@ -33,8 +33,9 @@ function App() {
         setStage('rejected');
       }
     } catch {
-      // Fail open — if classification errors, allow through
-      setStage('configure');
+      // Fail closed — a network/parse error must not silently bypass validation
+      setRejectReason('Document validation could not be completed. Please try again.');
+      setStage('rejected');
     }
   }
 
@@ -108,8 +109,21 @@ function App() {
             Not an Academic Document
           </h2>
           <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 8px' }}>
-            This document doesn't appear to be an academic document. Please upload a study material, textbook, or academic paper.
+            This document does not appear to be an academic document in History, Geography, Science, Mathematics or English. Please upload a relevant study material.
           </p>
+          <div style={{
+            display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center',
+            margin: '12px 0 0',
+          }}>
+            {['History', 'Geography', 'Science', 'Mathematics', 'English'].map((s) => (
+              <span key={s} style={{
+                background: '#fef2f2', color: '#ef4444',
+                border: '1px solid #fecaca',
+                borderRadius: '999px', padding: '3px 12px',
+                fontSize: '12px', fontWeight: 600,
+              }}>{s}</span>
+            ))}
+          </div>
           {rejectReason && (
             <p style={{
               fontSize: '13px', color: '#ef4444',
