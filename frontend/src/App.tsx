@@ -3,32 +3,48 @@ import DocumentUpload from './components/DocumentUpload';
 import DocumentPreview from './components/DocumentPreview';
 import ConfigPanel from './components/ConfigPanel';
 import QuestionPaperView from './components/QuestionPaperView';
-import { generatePaper } from './services/api';
+import { classifyDocument, generatePaper } from './services/api';
 import type { PaperConfig, QuestionPaper } from './types';
 
-type Stage = 'configure' | 'generating' | 'done';
+type Stage = 'upload' | 'classifying' | 'rejected' | 'configure' | 'generating' | 'done';
 
 function App() {
   const [extractedText, setExtractedText] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [stage, setStage] = useState<Stage>('configure');
+  const [stage, setStage] = useState<Stage>('upload');
   const [paper, setPaper] = useState<QuestionPaper | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState<string | null>(null);
 
-  function handleUpload(text: string, uploadedFile: File) {
+  async function handleUpload(text: string, uploadedFile: File) {
     setExtractedText(text);
     setFile(uploadedFile);
-    setStage('configure');
     setPaper(null);
     setError(null);
+    setRejectReason(null);
+    setStage('classifying');
+
+    try {
+      const result = await classifyDocument(text);
+      if (result.academic) {
+        setStage('configure');
+      } else {
+        setRejectReason(result.reason ?? null);
+        setStage('rejected');
+      }
+    } catch {
+      // Fail open — if classification errors, allow through
+      setStage('configure');
+    }
   }
 
   function handleReplace() {
     setExtractedText(null);
     setFile(null);
-    setStage('configure');
+    setStage('upload');
     setPaper(null);
     setError(null);
+    setRejectReason(null);
   }
 
   async function handleGenerate(config: PaperConfig) {
@@ -51,10 +67,85 @@ function App() {
     setError(null);
   }
 
-  if (!extractedText || !file) {
+  // Upload screen
+  if (stage === 'upload') {
     return <DocumentUpload onUpload={handleUpload} />;
   }
 
+  // Classifying screen — shown briefly while AI checks the document
+  if (stage === 'classifying') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+        <div style={{
+          width: '56px', height: '56px',
+          border: '3px solid #e5e7eb', borderTopColor: '#6366f1',
+          borderRadius: '50%', animation: 'spin 0.8s linear infinite',
+        }} />
+        <p style={{ fontWeight: 600, color: '#374151', margin: 0 }}>Analysing document…</p>
+        <p style={{ fontSize: '13px', color: '#9ca3af', margin: 0 }}>Checking if this is an academic document</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  // Rejected screen
+  if (stage === 'rejected') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 16px' }}>
+        <div style={{
+          maxWidth: '480px', width: '100%', textAlign: 'center',
+          background: '#fff',
+          border: '1.5px solid #fecaca',
+          borderRadius: '20px',
+          padding: '48px 36px',
+          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.07), 0 20px 40px -8px rgba(239,68,68,0.1)',
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📄</div>
+          <h2 style={{
+            fontSize: '1.3rem', fontWeight: 800, color: '#991b1b',
+            margin: '0 0 12px',
+          }}>
+            Not an Academic Document
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 8px' }}>
+            This document doesn't appear to be an academic document. Please upload a study material, textbook, or academic paper.
+          </p>
+          {rejectReason && (
+            <p style={{
+              fontSize: '13px', color: '#ef4444',
+              background: '#fef2f2', border: '1px solid #fecaca',
+              borderRadius: '8px', padding: '8px 14px',
+              margin: '12px 0 0',
+            }}>
+              {rejectReason}
+            </p>
+          )}
+          <button
+            onClick={handleReplace}
+            style={{
+              marginTop: '28px',
+              background: 'linear-gradient(90deg, #f97316, #ef4444)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '12px 32px',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(239,68,68,0.3)',
+              transition: 'opacity 0.15s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.88'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+          >
+            Try Another Document
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Main app
   return (
     <div className="container-fluid py-4 px-4">
       <div className="text-center mb-4 py-3">
@@ -87,7 +178,7 @@ function App() {
       ) : (
         <div className="row g-4 align-items-start">
           <div className="col-lg-8">
-            <DocumentPreview file={file} text={extractedText} onReplace={handleReplace} />
+            <DocumentPreview file={file!} text={extractedText!} onReplace={handleReplace} />
           </div>
           <div className="col-lg-4">
             {error && (

@@ -2,6 +2,23 @@ import type { PaperConfig, QuestionPaper } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
+export interface ClassifyResult {
+  academic: boolean;
+  subject?: string;
+  reason?: string;
+}
+
+export async function classifyDocument(text: string): Promise<ClassifyResult> {
+  const res = await fetch(`${API_BASE}/api/classify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Classification failed.');
+  return data as ClassifyResult;
+}
+
 export async function generatePaper(text: string, config: PaperConfig): Promise<QuestionPaper> {
   const res = await fetch(`${API_BASE}/api/generate`, {
     method: 'POST',

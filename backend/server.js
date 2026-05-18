@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const uploadRoute = require('./routes/upload');
 const generateRoute = require('./routes/generate');
+const classifyRoute = require('./routes/classify');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -15,6 +16,7 @@ app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/upload', uploadRoute);
 app.use('/api/generate', generateRoute);
+app.use('/api/classify', classifyRoute);
 
 // JSON error handler — catches anything Express 5 forwards via next(err)
 app.use((err, req, res, next) => {
