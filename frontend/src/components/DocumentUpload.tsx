@@ -42,10 +42,40 @@ export default function DocumentUpload({ onUpload }: Props) {
   const isActive = dragging || hovering;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 16px' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #f5f3ff 0%, #eff6ff 35%, #fdf4ff 70%, #f0f9ff 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 16px', position: 'relative', overflow: 'hidden' }}>
+
+      {/* Decorative background shapes */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+        {/* Large blurred orbs */}
+        <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '420px', height: '420px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)' }} />
+        <div style={{ position: 'absolute', bottom: '-80px', right: '-80px', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)' }} />
+        <div style={{ position: 'absolute', top: '40%', right: '8%', width: '260px', height: '260px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(168,85,247,0.09) 0%, transparent 70%)' }} />
+        <div style={{ position: 'absolute', top: '20%', left: '6%', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,72,153,0.07) 0%, transparent 70%)' }} />
+        <div style={{ position: 'absolute', top: '60%', left: '30%', width: '180px', height: '180px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)' }} />
+
+        {/* Dot grid */}
+        <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.45 }} xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.5" cy="1.5" r="1.5" fill="#a5b4fc" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)" />
+        </svg>
+
+        {/* Floating geometric accents */}
+        <div style={{ position: 'absolute', top: '12%', right: '14%', width: '20px', height: '20px', borderRadius: '5px', background: 'rgba(139,92,246,0.2)', transform: 'rotate(20deg)', boxShadow: '0 2px 8px rgba(139,92,246,0.15)' }} />
+        <div style={{ position: 'absolute', top: '70%', left: '10%', width: '14px', height: '14px', borderRadius: '50%', background: 'rgba(99,102,241,0.25)', boxShadow: '0 2px 6px rgba(99,102,241,0.2)' }} />
+        <div style={{ position: 'absolute', top: '35%', left: '5%', width: '24px', height: '24px', borderRadius: '7px', background: 'rgba(168,85,247,0.15)', transform: 'rotate(-15deg)', boxShadow: '0 2px 8px rgba(168,85,247,0.12)' }} />
+        <div style={{ position: 'absolute', bottom: '20%', right: '12%', width: '16px', height: '16px', borderRadius: '50%', background: 'rgba(236,72,153,0.18)', boxShadow: '0 2px 6px rgba(236,72,153,0.15)' }} />
+        <div style={{ position: 'absolute', bottom: '35%', left: '18%', width: '12px', height: '12px', borderRadius: '3px', background: 'rgba(99,102,241,0.16)', transform: 'rotate(35deg)' }} />
+        <div style={{ position: 'absolute', top: '8%', left: '40%', width: '10px', height: '10px', borderRadius: '50%', background: 'rgba(139,92,246,0.18)' }} />
+        <div style={{ position: 'absolute', bottom: '12%', left: '45%', width: '8px', height: '8px', borderRadius: '2px', background: 'rgba(59,130,246,0.2)', transform: 'rotate(45deg)' }} />
+        <div style={{ position: 'absolute', top: '55%', right: '5%', width: '18px', height: '18px', borderRadius: '50%', background: 'rgba(168,85,247,0.14)', boxShadow: '0 2px 6px rgba(168,85,247,0.1)' }} />
+      </div>
 
       {/* Hero */}
-      <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '48px', position: 'relative', zIndex: 1 }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           background: 'linear-gradient(135deg, #ede9fe, #dbeafe)',
@@ -75,13 +105,24 @@ export default function DocumentUpload({ onUpload }: Props) {
       </div>
 
       {/* Upload card */}
-      <div style={{
-        width: '100%', maxWidth: '560px',
-        background: '#fff',
-        borderRadius: '20px',
-        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.07), 0 20px 40px -8px rgba(99,102,241,0.12)',
-        padding: '40px 36px',
-      }}>
+      <div
+        style={{
+          width: '100%', maxWidth: '560px',
+          background: '#fff',
+          borderRadius: '24px',
+          border: hovering || dragging
+            ? '1px solid rgba(139,92,246,0.2)'
+            : '1px solid rgba(196,181,253,0.25)',
+          boxShadow: hovering || dragging
+            ? '0 0 0 4px rgba(139,92,246,0.06), 0 12px 24px -4px rgba(0,0,0,0.10), 0 40px 80px -12px rgba(99,102,241,0.30)'
+            : '0 2px 4px -1px rgba(0,0,0,0.04), 0 8px 16px -4px rgba(0,0,0,0.06), 0 28px 60px -10px rgba(99,102,241,0.18)',
+          padding: '40px 36px',
+          transform: hovering || dragging ? 'translateY(-6px) scale(1.005)' : 'translateY(0) scale(1)',
+          transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s ease',
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
         {/* Drop zone */}
         <div
           onClick={() => !loading && inputRef.current?.click()}
@@ -205,7 +246,7 @@ export default function DocumentUpload({ onUpload }: Props) {
       </div>
 
       {/* Feature pills */}
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '40px' }}>
+      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '40px', position: 'relative', zIndex: 1 }}>
         {[
           { icon: '⚡', text: 'Instant generation' },
           { icon: '✏️', text: 'Inline editing' },
