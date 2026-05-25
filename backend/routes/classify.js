@@ -5,29 +5,15 @@ const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-const BLACKLIST = [
-  'leetcode', 'github', 'backend', 'frontend', 'coding', 'programming',
-  'software', 'dsa', 'algorithm', 'python', 'javascript', 'react',
-  'fastapi', 'sqlite', 'npm', 'hackathon', 'vercel',
-  'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
-  'week 1', 'week 2', 'week 3', 'timetable', 'routine', 'schedule',
-  'phase 1', 'phase 2', 'roadmap', 'sprint', 'daily plan', 'weekly plan',
-  'monthly plan', 'to-do', 'todo',
-];
 
 router.post('/', async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: 'Missing text.' });
 
-  // Step 1 — blacklist check (no AI)
   const lower = text.toLowerCase();
-  const hit = BLACKLIST.find((kw) => lower.includes(kw));
-  if (hit) {
-    return res.json({
-      academic: false,
-      reason: `Document contains invalid content ("${hit}") and cannot be used to generate school exam questions.`,
-    });
-  }
+  const BLACKLIST = ['leetcode', 'github', 'coding', 'programming', 'software', 'dsa', 'algorithm', 'python', 'javascript', 'react', 'fastapi', 'sqlite', 'npm', 'hackathon', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'timetable', 'routine', 'schedule', 'roadmap', 'sprint', 'weekly plan', 'daily plan', 'monthly plan', 'phase 1', 'phase 2', 'week 1', 'week 2'];
+  const hit = BLACKLIST.find(kw => lower.includes(kw));
+  if (hit) return res.json({ academic: false, reason: `Document rejected: contains "${hit}"` });
 
   // Step 2 — AI confirmation
   const prompt = `You are a classifier for a school question paper generator.
