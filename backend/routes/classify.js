@@ -5,19 +5,33 @@ const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-const TECH_BLACKLIST = [
-  'leetcode', 'github', ' api ', 'apis', 'backend', 'front-end', 'frontend',
-  'framework', 'coding', 'programming', 'software', ' dsa ', 'algorithm',
-  'database', ' sql', 'python', 'javascript', 'typescript', 'react', ' node',
-  'fastapi', 'sqlite', ' rest ', 'restful', ' jwt ', 'web scraping', 'scraping',
-  'hackathon', ' npm ', 'deploy', 'vercel', 'render.com', 'flask', 'django',
-  'spring boot', 'docker', 'kubernetes', 'microservice', 'devops', 'ci/cd',
-  'machine learning', 'deep learning', 'neural network', 'data science',
+// Plain substrings — matched case-insensitively anywhere in the text
+const TECH_BLACKLIST_PLAIN = [
+  'leetcode', 'github', 'backend', 'frontend', 'front-end', 'coding',
+  'programming', 'software', 'algorithm', 'python', 'javascript', 'typescript',
+  'fastapi', 'sqlite', 'hackathon', 'vercel', 'framework', 'database',
+  'flask', 'django', 'spring boot', 'docker', 'kubernetes', 'microservice',
+  'devops', 'machine learning', 'deep learning', 'neural network', 'data science',
+  'node.js', 'react.js', 'next.js', 'web scraping', 'render.com', 'restful',
+];
+
+// Short tokens — matched as whole words only to avoid false positives
+// Excluded: 'rest' (common English), 'node' (biology/physics), 'react' (chemistry verb)
+// Their tech forms — node.js, react.js, restful — are covered in the plain list
+const TECH_BLACKLIST_WORDS = [
+  'dsa', 'api', 'sql', 'npm', 'jwt',
 ];
 
 function blacklistCheck(text) {
   const lower = text.toLowerCase();
-  return TECH_BLACKLIST.find((kw) => lower.includes(kw)) || null;
+
+  const plainHit = TECH_BLACKLIST_PLAIN.find((kw) => lower.includes(kw));
+  if (plainHit) return plainHit;
+
+  const wordHit = TECH_BLACKLIST_WORDS.find((kw) =>
+    new RegExp(`\\b${kw}\\b`).test(lower)
+  );
+  return wordHit || null;
 }
 
 router.post('/', async (req, res) => {
