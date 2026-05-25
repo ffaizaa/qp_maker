@@ -9,7 +9,7 @@ const { GoogleAIFileManager } = require('@google/generative-ai/server');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
-const visionModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+const visionModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 const VISION_PROMPT =
   'Extract ALL text from this document exactly as it appears. ' +

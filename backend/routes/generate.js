@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 function buildPrompt(text, config) {
   const { difficulty, counts } = config;
@@ -130,12 +130,12 @@ router.post('/', async (req, res) => {
   try {
     data = await callGemini(prompt);
   } catch (err) {
-    console.error('Gemini attempt 1 failed:', err.message);
+    console.error('Gemini attempt 1 failed [status=%s]: %s', err.status ?? 'n/a', err.message);
     // Retry once
     try {
       data = await callGemini(prompt);
     } catch (err2) {
-      console.error('Gemini attempt 2 failed:', err2.message);
+      console.error('Gemini attempt 2 failed [status=%s]: %s', err2.status ?? 'n/a', err2.message);
       return res.status(502).json({ error: 'AI generation failed. Please try again.' });
     }
   }
