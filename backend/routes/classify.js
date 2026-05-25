@@ -21,10 +21,13 @@ VALID documents — accept if the document CONTAINS actual academic subject matt
 
 INVALID documents — reject ALL of the following without exception:
 - Class routines, timetables, schedules, or planners — ANY document that shows a time-based schedule (e.g., "Monday: Math 9–10, English 10–11") even if it lists subject names
-- Personal plans, career roadmaps, coding plans, 12-week plans, or learning schedules
-- Any document that organises or lists WHEN subjects are studied, rather than containing actual subject content
-- Programming tutorials, coding guides, DSA study plans, LeetCode problems, software development content
-- Computer science or IT content of any kind
+- Personal plans, career roadmaps, coding plans, or any numbered/weekly/12-week learning plans
+- Any document that organises or lists WHEN or WHAT to study, rather than containing actual subject content
+- Coding plans, programming roadmaps, DSA (data structures & algorithms) study schedules
+- Documents that mention LeetCode, GitHub, APIs, programming frameworks (FastAPI, Django, React, etc.), databases (SQLite, PostgreSQL), or software tools
+- Programming tutorials, coding guides, software development content, computer science projects
+- Computer science or IT content of any kind — including if titled as a "plan", "roadmap", or "curriculum"
+- Career development plans, self-improvement plans, or productivity documents — even if structured like a curriculum or week-by-week schedule
 - Revision checklists, topic lists, or to-do lists for studying
 - Self-improvement, productivity, or motivational content
 - Business, legal, medical, or financial documents
@@ -33,12 +36,14 @@ INVALID documents — reject ALL of the following without exception:
 - Documents with fewer than 80 words of real subject content
 
 CRITICAL DISTINCTION — ask yourself before deciding:
-- Does this document CONTAIN academic subject matter (actual facts, passages, problems, questions)? → ACADEMIC
-- Does this document only REFERENCE or ORGANISE subjects (a schedule, timetable, planner, checklist)? → NOT_ACADEMIC
-- A timetable listing "Math, English, Science" at different times contains NO subject content and must be rejected, even though it names academic subjects.
-- A comprehension passage or textbook page contains actual subject content and must be accepted, even if uploaded as a screenshot.
+- Does this document CONTAIN actual school subject matter (facts, passages, problems, questions) from the five valid subjects? → ACADEMIC
+- Does this document PLAN, ORGANISE, or DESCRIBE what to learn or build — even in a structured, week-by-week format? → NOT_ACADEMIC
+- A coding roadmap or DSA study plan is NOT academic even if it is highly structured and mentions "weeks" or "curriculum".
+- A document mentioning LeetCode, GitHub, Python, APIs, or any programming framework is NOT academic — reject it immediately.
+- A timetable listing subject names contains no subject content and must be rejected.
+- A comprehension passage or textbook page contains actual subject content and must be accepted, even as a screenshot.
 
-KEY TEST: "Could a school teacher set exam questions directly from the substance of this text?" If yes → ACADEMIC. If the document is just a schedule, plan, or list of subject names with no actual content → NOT_ACADEMIC.
+KEY TEST: "Does this document teach school subject content (History, Geography, Science, Maths, English) that a teacher could directly set exam questions from?" If the answer is NO for any reason — including because it is a plan, roadmap, coding guide, or schedule — it is NOT_ACADEMIC.
 
 Respond with exactly one line in this format:
 ACADEMIC: <subject name>
