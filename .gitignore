@@ -6,3 +6,4 @@ backend/.env
 *.local
 .DS_Store
 *.traineddata
+*.code-workspace
