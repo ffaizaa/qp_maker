@@ -5,10 +5,35 @@ const router = express.Router();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
+const TECH_BLACKLIST = [
+  'leetcode', 'github', ' api ', 'apis', 'backend', 'front-end', 'frontend',
+  'framework', 'coding', 'programming', 'software', ' dsa ', 'algorithm',
+  'database', ' sql', 'python', 'javascript', 'typescript', 'react', ' node',
+  'fastapi', 'sqlite', ' rest ', 'restful', ' jwt ', 'web scraping', 'scraping',
+  'hackathon', ' npm ', 'deploy', 'vercel', 'render.com', 'flask', 'django',
+  'spring boot', 'docker', 'kubernetes', 'microservice', 'devops', 'ci/cd',
+  'machine learning', 'deep learning', 'neural network', 'data science',
+];
+
+function blacklistCheck(text) {
+  const lower = text.toLowerCase();
+  return TECH_BLACKLIST.find((kw) => lower.includes(kw)) || null;
+}
+
 router.post('/', async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: 'Missing text.' });
 
+  // Step 1 — instant keyword blacklist
+  const hit = blacklistCheck(text);
+  if (hit) {
+    return res.json({
+      academic: false,
+      reason: `Document contains programming or technology content ("${hit.trim()}") and cannot be used to generate school exam questions.`,
+    });
+  }
+
+  // Step 2 — AI classification
   const prompt = `You are a strict document classifier for a school question paper generator. Read the document carefully and decide if it qualifies as a valid academic document.
 
 VALID documents — accept if the document CONTAINS actual academic subject matter:
