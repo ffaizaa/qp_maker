@@ -109,13 +109,13 @@ function App() {
             Not an Academic Document
           </h2>
           <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 8px' }}>
-            This document does not appear to be an academic document in History, Geography, Science, Mathematics or English. Please upload a relevant study material.
+            This document does not appear to be an academic document in History, Geography, Science or English. Please upload a relevant study material.
           </p>
           <div style={{
             display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center',
             margin: '12px 0 0',
           }}>
-            {['History', 'Geography', 'Science', 'Mathematics', 'English'].map((s) => (
+            {['History', 'Geography', 'Science', 'English'].map((s) => (
               <span key={s} style={{
                 background: '#fef2f2', color: '#ef4444',
                 border: '1px solid #fecaca',

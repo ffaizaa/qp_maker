@@ -1,6 +1,6 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import type { MCQQuestion, MathQuestion, Question, QuestionPaper } from '../types';
+import type { MCQQuestion, Question, QuestionPaper } from '../types';
 
 const MCQ_LABELS = ['A', 'B', 'C', 'D'];
 
@@ -40,16 +40,7 @@ function buildPaperHTML(paper: QuestionPaper, includeAnswers: boolean): string {
         </div>`;
       }
 
-      if (q.type === 'Math Problem' && includeAnswers) {
-        const math = q as MathQuestion;
-        const stepsHtml = math.steps
-          ? `<div style="white-space:pre-wrap;color:#555;font-size:12px;margin-bottom:4px;">${math.steps}</div>`
-          : '';
-        body = `<div style="margin-left:16px;margin-top:4px;">
-          ${stepsHtml}
-          ${math.answer ? `<div style="color:#155724;font-weight:600;font-size:12px;">= ${math.answer}</div>` : ''}
-        </div>`;
-      } else if (includeAnswers && q.answer && q.type !== 'MCQ' && q.type !== 'True/False') {
+      if (includeAnswers && q.answer && q.type !== 'MCQ' && q.type !== 'True/False') {
         body = `<div style="margin-left:16px;margin-top:4px;color:#155724;font-style:italic;font-size:12px;">
           Answer: ${q.answer}
         </div>`;
@@ -97,9 +88,6 @@ function buildAnswerKeyHTML(paper: QuestionPaper): string {
       const idx = mcq.options.indexOf(mcq.answer ?? '');
       const label = idx >= 0 ? `${MCQ_LABELS[idx]}. ` : '';
       answerText = `${label}${mcq.answer ?? '—'}`;
-    } else if (q.type === 'Math Problem') {
-      const math = q as MathQuestion;
-      answerText = [math.steps, math.answer ? `= ${math.answer}` : ''].filter(Boolean).join('\n');
     } else {
       answerText = q.answer ?? '—';
     }

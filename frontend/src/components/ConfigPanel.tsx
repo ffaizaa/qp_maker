@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Difficulty, PaperConfig, QuestionCounts, QuestionType } from '../types';
 
-const QUESTION_TYPES: QuestionType[] = ['MCQ', 'Short Question', 'Broad Question', 'True/False', 'Math Problem'];
+const QUESTION_TYPES: QuestionType[] = ['MCQ', 'Short Question', 'Broad Question', 'True/False'];
 const DIFFICULTIES: Difficulty[] = ['Easy', 'Medium', 'Hard'];
 
 const DIFFICULTY_STYLES: Record<Difficulty, { active: string; glow: string; hover: string }> = {

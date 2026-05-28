@@ -251,7 +251,6 @@ export default function DocumentUpload({ onUpload }: Props) {
           { icon: '⚡', text: 'Instant generation' },
           { icon: '✏️', text: 'Inline editing' },
           { icon: '📄', text: 'PDF export' },
-          { icon: '🔢', text: 'Math problems' },
         ].map(({ icon, text }) => (
           <div key={text} style={{
             display: 'flex', alignItems: 'center', gap: '6px',

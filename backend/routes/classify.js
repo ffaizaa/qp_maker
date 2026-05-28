@@ -18,8 +18,8 @@ router.post('/', async (req, res) => {
   // Step 2 — AI confirmation
   const prompt = `You are a classifier for a school question paper generator.
 
-Decide if the document below is valid academic content for one of these five subjects ONLY:
-History, Geography, Science (Physics/Chemistry/Biology), Mathematics, English (literature, comprehension, grammar).
+Decide if the document below is valid academic content for one of these four subjects ONLY:
+History, Geography, Science (Physics/Chemistry/Biology), English (literature, comprehension, grammar).
 
 Valid: textbook chapters, exam papers, study notes, comprehension passages, academic articles.
 Invalid: timetables, schedules, plans, roadmaps, coding content, CV, business documents, anything outside the five subjects.

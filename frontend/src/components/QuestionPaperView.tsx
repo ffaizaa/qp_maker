@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { MCQQuestion, MathQuestion, Question, QuestionPaper, TrueFalseQuestion } from '../types';
+import type { MCQQuestion, Question, QuestionPaper, TrueFalseQuestion } from '../types';
 import { exportAnswerKey, exportToPDF } from '../services/exportPDF';
 
 interface Props {
@@ -40,15 +40,6 @@ function EditForm({ question, onSave, onCancel }: EditFormProps) {
       ? (question.answer ?? '') : ''
   );
 
-  // Math Problem state
-  const math = question as MathQuestion;
-  const [mathSteps, setMathSteps] = useState<string>(
-    question.type === 'Math Problem' ? (math.steps ?? '') : ''
-  );
-  const [mathAnswer, setMathAnswer] = useState<string>(
-    question.type === 'Math Problem' ? (math.answer ?? '') : ''
-  );
-
   function handleSave() {
     if (!text.trim()) return;
 
@@ -60,8 +51,6 @@ function EditForm({ question, onSave, onCancel }: EditFormProps) {
       updated = { ...question, question: text.trim(), options: filledOptions, answer };
     } else if (question.type === 'True/False') {
       updated = { ...question, question: text.trim(), answer: tfAnswer };
-    } else if (question.type === 'Math Problem') {
-      updated = { ...question, question: text.trim(), steps: mathSteps.trim() || undefined, answer: mathAnswer.trim() || undefined };
     } else {
       updated = { ...question, question: text.trim(), answer: writtenAnswer.trim() || undefined };
     }
@@ -148,32 +137,6 @@ function EditForm({ question, onSave, onCancel }: EditFormProps) {
         </div>
       )}
 
-      {/* Math Problem steps + answer */}
-      {question.type === 'Math Problem' && (
-        <>
-          <div className="mb-3">
-            <label className="form-label small fw-semibold">Step-by-step Working</label>
-            <textarea
-              className="form-control form-control-sm"
-              rows={4}
-              value={mathSteps}
-              onChange={(e) => setMathSteps(e.target.value)}
-              placeholder="Step 1: ..."
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label small fw-semibold">Final Answer</label>
-            <input
-              type="text"
-              className="form-control form-control-sm"
-              value={mathAnswer}
-              onChange={(e) => setMathAnswer(e.target.value)}
-              placeholder="e.g. x = 5"
-            />
-          </div>
-        </>
-      )}
-
       <div className="d-flex gap-2">
         <button className="btn btn-sm btn-primary" onClick={handleSave}>Save</button>
         <button className="btn btn-sm btn-outline-secondary" onClick={onCancel}>Cancel</button>
@@ -249,21 +212,8 @@ function QuestionItem({ question, index, showAnswers, onUpdate }: QuestionItemPr
         </div>
       )}
 
-      {question.type === 'Math Problem' && showAnswers && (
-        <div className="ms-3 mt-1">
-          {(question as MathQuestion).steps && (
-            <pre className="mb-1 text-muted small" style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
-              {(question as MathQuestion).steps}
-            </pre>
-          )}
-          {(question as MathQuestion).answer && (
-            <p className="mb-0 text-success fw-semibold small">= {(question as MathQuestion).answer}</p>
-          )}
-        </div>
-      )}
-
       {showAnswers && question.answer &&
-        question.type !== 'MCQ' && question.type !== 'True/False' && question.type !== 'Math Problem' && (
+        question.type !== 'MCQ' && question.type !== 'True/False' && (
           <p className="ms-3 mb-0 text-success small fst-italic">Answer: {question.answer}</p>
         )}
     </div>
